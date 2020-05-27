@@ -1,6 +1,49 @@
 import React from 'react';
+import axios from 'axios';
 
 function Chatbot() {
+
+    const textQuery = async (text) => {
+        // step1) 클라이언트가 입력한 메시지 처리. 채팅 창에 해당 메시지를 올린다.
+        
+        let conversations = []
+
+        // dialogflow가 응답으로 보내준 json데이터와 형식을 맞춘다. => postman에서 확인할 수 있다.
+        let conversation = {
+            who: 'user',
+            content: {
+                text: {
+                    text: text
+                }
+            }
+        }
+
+       // step2) 챗봇이 보낸 response 메시지를 처리한다.
+
+        const textQueryVariables = {
+            text
+        };
+        
+        try {
+            // Text Query Route에 request를 보낸다.
+            const response = await axios.post('/api/dialogflow/textQuery', textQueryVariables);     // await으로 인해 서버에서 처리가 반환될 때까지 기다린다.
+            const content = response.data.fulfillmentMessages[0];
+            
+            conversation = {
+                who: 'kyobot',
+                content: content
+            };
+        } catch(err) {
+            conversation = {
+                who: 'kyobot',
+                content: {
+                    text: {
+                        text: "Error occured, please check the problem"
+                    }
+                }
+            };
+        }
+    }
 
     const keyPressHandler = (e) => {
         // 엔터 키를 입력한 경우
@@ -10,7 +53,7 @@ function Chatbot() {
             }
 
             // 무언가의 내용이 입력되었다면 Text Query Route에 request를 보낸다.
-            // textQuery(e.target.value);
+            textQuery(e.target.value);
 
             // requset를 보낸 후에 다시 input 창을 빈 스트링으로 만들어 준다.
             e.target.value = "";
