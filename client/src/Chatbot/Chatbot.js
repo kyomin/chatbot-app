@@ -1,7 +1,12 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import axios from 'axios';
 
 function Chatbot() {
+
+    // 페이지 로드될 때의 동작
+    useEffect(() => {
+        eventQuery('welcomeToMyWebsite');
+    }, []);
 
     const textQuery = async (text) => {
         // step1) 클라이언트가 입력한 메시지 처리. 채팅 창에 해당 메시지를 올린다.
@@ -44,6 +49,35 @@ function Chatbot() {
             };
         }
     }
+
+
+    const eventQuery = async (event) => {
+
+        const eventQueryVariables = {
+            event
+        };
+        
+        try {
+            // Event Query Route에 request를 보낸다.
+            const response = await axios.post('/api/dialogflow/eventQuery', eventQueryVariables);     // await으로 인해 서버에서 처리가 반환될 때까지 기다린다.
+            const content = response.data.fulfillmentMessages[0];
+            
+            let conversation = {
+                who: 'kyobot',
+                content: content
+            };
+        } catch(err) {
+            let conversation = {
+                who: 'kyobot',
+                content: {
+                    text: {
+                        text: "Error occured, please check the problem"
+                    }
+                }
+            };
+        }
+    }
+
 
     const keyPressHandler = (e) => {
         // 엔터 키를 입력한 경우
