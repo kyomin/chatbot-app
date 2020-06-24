@@ -16,11 +16,15 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+.ant-list-item-meta-content {
+  max-width: 500px;
+}
+
 .ant-list-item-meta-title {
   font-size: 20px !important;
 }
 
 .ant-list-item-meta-description {
-  display: flex;
+  word-break: keep-all;
   color: black !important;
 }

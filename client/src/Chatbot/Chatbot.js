@@ -37,14 +37,15 @@ function Chatbot() {
         try {
             // Text Query Route에 request를 보낸다.
             const response = await axios.post('/api/dialogflow/textQuery', textQueryVariables);     // await으로 인해 서버에서 처리가 반환될 때까지 기다린다.
-            const content = response.data.fulfillmentMessages[0];
             
-            conversation = {
-                who: 'kyobot',
-                content: content
-            };
-
-            dispatch(saveMessage(conversation));
+            for(let content of response.data.fulfillmentMessages) {
+                conversation = {
+                    who: 'kyobot',
+                    content: content
+                };
+    
+                dispatch(saveMessage(conversation));
+            }
         } catch(err) {
             conversation = {
                 who: 'kyobot',
@@ -69,14 +70,15 @@ function Chatbot() {
         try {
             // Event Query Route에 request를 보낸다.
             const response = await axios.post('/api/dialogflow/eventQuery', eventQueryVariables);     // await으로 인해 서버에서 처리가 반환될 때까지 기다린다.
-            const content = response.data.fulfillmentMessages[0];
             
-            let conversation = {
-                who: 'kyobot',
-                content: content
-            };
-
-            dispatch(saveMessage(conversation));
+            for(let content of response.data.fulfillmentMessages) {
+                let conversation = {
+                    who: 'kyobot',
+                    content: content
+                };
+    
+                dispatch(saveMessage(conversation));
+            }
         } catch(err) {
             let conversation = {
                 who: 'kyobot',

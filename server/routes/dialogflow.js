@@ -33,10 +33,7 @@ router.post('/textQuery', async (req, res) => {     // await 키워드는 async 
     
     // Send request and log result to Dialogflow API
     const responses = await sessionClient.detectIntent(request);    // Dialogflow에서 가공한 데이터가 담긴다.
-    console.log('Detected intent');
     const result = responses[0].queryResult;
-    console.log(`  Query: ${result.queryText}`);
-    console.log(`  Response: ${result.fulfillmentText}`);
     
     res.send(result);
 });
@@ -61,10 +58,7 @@ router.post('/eventQuery', async (req, res) => {     // await 키워드는 async
     
     // Send request and log result to Dialogflow API
     const responses = await sessionClient.detectIntent(request);    // Dialogflow에서 가공한 데이터가 담긴다.
-    console.log('Detected intent');
     const result = responses[0].queryResult;
-    console.log(`  Query: ${result.queryText}`);
-    console.log(`  Response: ${result.fulfillmentText}`);
     
     res.send(result);
 });
