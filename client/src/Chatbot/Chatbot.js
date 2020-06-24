@@ -1,7 +1,10 @@
 import React, { useEffect } from 'react';
 import axios from 'axios';
+import { useDispatch, useSelector } from 'react-redux';
+import { saveMessage } from '../_actions/message_actions';
 
 function Chatbot() {
+    const dispatch = useDispatch();
 
     // 페이지 로드될 때의 동작
     useEffect(() => {
@@ -10,8 +13,6 @@ function Chatbot() {
 
     const textQuery = async (text) => {
         // step1) 클라이언트가 입력한 메시지 처리. 채팅 창에 해당 메시지를 올린다.
-        
-        let conversations = []
 
         // dialogflow가 응답으로 보내준 json데이터와 형식을 맞춘다. => postman에서 확인할 수 있다.
         let conversation = {
@@ -23,7 +24,10 @@ function Chatbot() {
             }
         }
 
-       // step2) 챗봇이 보낸 response 메시지를 처리한다.
+        dispatch(saveMessage(conversation));
+        console.log("text I sent : ", conversation);
+
+        // step2) 챗봇이 보낸 response 메시지를 처리한다.
 
         const textQueryVariables = {
             text
@@ -38,6 +42,9 @@ function Chatbot() {
                 who: 'kyobot',
                 content: content
             };
+
+            dispatch(saveMessage(conversation));
+            console.log("text kyobot sent : ", conversation);
         } catch(err) {
             conversation = {
                 who: 'kyobot',
@@ -47,6 +54,8 @@ function Chatbot() {
                     }
                 }
             };
+
+            dispatch(saveMessage(conversation));
         }
     }
 
@@ -66,6 +75,8 @@ function Chatbot() {
                 who: 'kyobot',
                 content: content
             };
+
+            dispatch(saveMessage(conversation));
         } catch(err) {
             let conversation = {
                 who: 'kyobot',
@@ -75,6 +86,8 @@ function Chatbot() {
                     }
                 }
             };
+
+            dispatch(saveMessage(conversation));
         }
     }
 
