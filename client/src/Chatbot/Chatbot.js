@@ -2,9 +2,11 @@ import React, { useEffect } from 'react';
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { saveMessage } from '../_actions/message_actions';
+import Message from './Section/Message';
 
 function Chatbot() {
     const dispatch = useDispatch();
+    const messagesFromRedux = useSelector(state => state.message.messages);
 
     // 페이지 로드될 때의 동작
     useEffect(() => {
@@ -16,7 +18,7 @@ function Chatbot() {
 
         // dialogflow가 응답으로 보내준 json데이터와 형식을 맞춘다. => postman에서 확인할 수 있다.
         let conversation = {
-            who: 'user',
+            who: 'you',
             content: {
                 text: {
                     text: text
@@ -25,7 +27,6 @@ function Chatbot() {
         }
 
         dispatch(saveMessage(conversation));
-        console.log("text I sent : ", conversation);
 
         // step2) 챗봇이 보낸 response 메시지를 처리한다.
 
@@ -44,7 +45,6 @@ function Chatbot() {
             };
 
             dispatch(saveMessage(conversation));
-            console.log("text kyobot sent : ", conversation);
         } catch(err) {
             conversation = {
                 who: 'kyobot',
@@ -107,6 +107,23 @@ function Chatbot() {
         }
     }
 
+
+    const renderOneMessage = (message, idx) => {
+        return <Message key={idx} who={message.who} text={message.content.text.text} />
+    }
+
+
+    const renderMessage = (returnedMessages) => {
+
+        if(returnedMessages) {
+            return returnedMessages.map((message, idx) => {
+                return renderOneMessage(message, idx);
+            });
+        } else {
+            return null;
+        }
+    }
+
     return (
         <div style={{
             height: 700,
@@ -114,12 +131,8 @@ function Chatbot() {
             border: '3px solid black',
             borderRadius: '7px'
         }}>
-            <div style={{
-                height: 644,
-                width: '100%',
-                overflow: 'auto'
-            }}>
-
+            <div style={{ height: 644, width: '100%', overflow: 'auto' }}>
+                {renderMessage(messagesFromRedux)}
             </div>
 
             <input
@@ -135,7 +148,6 @@ function Chatbot() {
                 type="text"
                 onKeyPress={keyPressHandler}
             />
-
         </div>
     )
 }
